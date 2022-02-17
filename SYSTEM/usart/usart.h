@@ -26,6 +26,7 @@
 //4,ĞŞ¸ÄÁËEN_USART1_RXµÄÊ¹ÄÜ·½Ê½
 //V1.5ĞŞ¸ÄËµÃ÷
 //1,Ôö¼ÓÁË¶ÔUCOSIIµÄÖ§³Ö
+//<<<<<<< HEAD
 #define USART_REC_LEN  		4096  	//¶¨Òå×î´ó½ÓÊÕ×Ö½ÚÊı 2KB
 #define EN_USART1_RX 			1		//Ê¹ÄÜ£¨1£©/½ûÖ¹£¨0£©´®¿Ú1½ÓÊÕ
 
@@ -35,6 +36,13 @@ extern u8 USART_RX_BUF2[USART_REC_LEN]; //½ÓÊÕ»º³å,×î´óUSART_REC_LEN¸ö×Ö½Ú.Ä©×Ö½
 extern u8 which_BUFz;       	//½ÓÊÕBUFÑ¡Ôñ1£¬ 2
 extern u16 USART_RX_cnt1;		//BUF1½ÓÊÕÊı¾İ¸öÊı£¨¼ÆÊı£©	
 extern u16 USART_RX_cnt2;		//BUF2½ÓÊÕÊı¾İ¸öÊı£¨¼ÆÊı£©
+//=======
+//#define USART_REC_LEN  			200  	//¶¨Òå×î´ó½ÓÊÕ×Ö½ÚÊı 200
+//#define EN_USART1_RX 			1		//Ê¹ÄÜ£¨1£©/½ûÖ¹£¨0£©´®¿Ú1½ÓÊÕ
+//	  	
+//extern u8  USART_RX_BUF[USART_REC_LEN]; //½ÓÊÕ»º³å,×î´óUSART_REC_LEN¸ö×Ö½Ú.Ä©×Ö½ÚÎª»»ĞĞ·û 
+//extern u16 USART_RX_STA;         		//½ÓÊÕ×´Ì¬±ê¼Ç	
+//>>>>>>> fdebee32e8bb24106c9e5847e9aecc1e51dfb3ab
 //Èç¹ûÏë´®¿ÚÖĞ¶Ï½ÓÊÕ£¬Çë²»Òª×¢ÊÍÒÔÏÂºê¶¨Òå
 void uart_init(u32 bound);
 #endif
