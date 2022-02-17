@@ -9,7 +9,9 @@
 #include "ff.h"  
 #include "exfuns.h"    
 
-u8 key0_flag = 0;
+u8 key_begin_flag = 0;
+u8 key_stop_flag = 0;
+
  
 /************************************************
 程序功能，存储8088串口打印的数据到SD卡
@@ -107,11 +109,17 @@ BYTE WriteBuffer[] = "随便写到文件中123abc";         /* 写缓冲区*/
 //		printf("！！打开文件失败。\r\n");
 //	}
 	
+	while(key_begin_flag == 0){
+		LED0 = ~LED0;
+		LED1 = ~LED1;
+		delay_ms(300);
+	}
+	
 	total = 0;
 	while(1)
 	{
 		
-		if (key0_flag)	// 按键按下
+		if (key_stop_flag)	// 按键按下
 		{
 			LED0 = 0;
 			LED1 = 0;
@@ -142,6 +150,7 @@ BYTE WriteBuffer[] = "随便写到文件中123abc";         /* 写缓冲区*/
 				LED0 = 1;
 				LED1 = 0;
 				USART_RX_cnt2 = 0;
+				//printf("write BUF2 OK, now cnt1 = %d\r\n", USART_RX_cnt1);
 			}
 			else
 				printf("！！文件写入失败：(res_flash = %d), fnum = %d\n",res_flash, fnum); 
@@ -152,6 +161,7 @@ BYTE WriteBuffer[] = "随便写到文件中123abc";         /* 写缓冲区*/
 				LED0 = 0;
 				LED1 = 1;
 				USART_RX_cnt1 = 0;
+				//printf("write BUF1 OK, now cnt2 = %d\r\n", USART_RX_cnt2);
 			}
 			else
 				printf("！！文件写入失败：(res_flash = %d), fnum = %d\n",res_flash, fnum); 
@@ -165,7 +175,7 @@ void EXTI0_IRQHandler(void)
 	delay_ms(10);//消抖
 	if(WK_UP==1)	 	 //WK_UP按键
 	{				 
-		if (key0_flag == 0)
+		if (key_stop_flag == 0)
 		{
 			/* 不再读写，关闭文件 */
 			f_close(&fnew);	
@@ -175,7 +185,7 @@ void EXTI0_IRQHandler(void)
 		
 		LED0 = 1;
 		LED1 = 1;
-		key0_flag = 1;
+		key_stop_flag = 1;
 	}
 	EXTI_ClearITPendingBit(EXTI_Line0); //清除LINE0上的中断标志位  
 }
@@ -185,17 +195,8 @@ void EXTI4_IRQHandler(void)
 	delay_ms(10);//消抖
 	if(KEY0==0)	 //按键KEY0
 	{
-		if (key0_flag == 0)
-		{
-			/* 不再读写，关闭文件 */
-			f_close(&fnew);	
-			/* 不再使用文件系统，取消挂载文件系统 */
-			f_mount(NULL,"0:",1);
-		}
 		
-		LED0=!LED0;
-		LED1=!LED1; 
-		key0_flag = 1;
+		key_begin_flag = 1;
 	}		 
 	EXTI_ClearITPendingBit(EXTI_Line4);  //清除LINE4上的中断标志位  
 }
