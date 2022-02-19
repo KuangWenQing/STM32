@@ -32,7 +32,7 @@
 extern u8 write_slow_flag;
 extern u8 USART_RX_BUF1[USART_REC_LEN]; //接收缓冲,最大USART_REC_LEN个字节.末字节为换行符 
 extern u8 USART_RX_BUF2[USART_REC_LEN]; //接收缓冲,最大USART_REC_LEN个字节.末字节为换行符
-extern u8 which_BUFz;       	//接收BUF选择1， 2
+extern volatile u8 which_BUF;       	//接收BUF选择1， 2
 extern u16 USART_RX_cnt1;		//BUF1接收数据个数（计数）	
 extern u16 USART_RX_cnt2;		//BUF2接收数据个数（计数）
 //如果想串口中断接收，请不要注释以下宏定义

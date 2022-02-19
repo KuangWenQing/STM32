@@ -21,7 +21,7 @@ FIL fnew;													/* 文件对象 */
 FRESULT res_flash;                /* 文件操作结果 */
 UINT fnum;            					  /* 文件成功读写数量 */
 //BYTE ReadBuffer[1024]={0};        /* 读缓冲区 */
-BYTE WriteBuffer[] = "随便写到文件中123abc";         /* 写缓冲区*/
+//BYTE WriteBuffer[] = "随便写到文件中123abc";         /* 写缓冲区*/
 
  int main(void)
  {	 
@@ -52,14 +52,14 @@ BYTE WriteBuffer[] = "随便写到文件中123abc";         /* 写缓冲区*/
 		LED0=!LED0;//DS0闪烁
 	}													  			    
  					
-	printf("SD Total Size: %d    MB\r\n", total>>10);	//显示SD卡总容量 MB
-	printf("SD  Free Size: %d    MB\r\n", free>>10);	//显示SD卡剩余容量 MB	
-	
-	printf("\r\n******即将进行文件写入测试... ******\r\n");	
+//	printf("SD Total Size: %d    MB\r\n", total>>10);	//显示SD卡总容量 MB
+//	printf("SD  Free Size: %d    MB\r\n", free>>10);	//显示SD卡剩余容量 MB	
+//	
+//	printf("\r\n******即将进行文件写入测试... ******\r\n");	
 	res_flash = f_open(&fnew, "0:gps_test_data\\out_test.log",FA_CREATE_ALWAYS | FA_WRITE );
 	if ( res_flash == FR_OK )
 	{
-		printf("》打开/创建FatFs读写测试文件.txt文件成功，向文件写入数据。\r\n");
+//		printf("》打开/创建FatFs读写测试文件.txt文件成功，向文件写入数据。\r\n");
 		LED0 = 1;
 		LED1 = 1;
     /* 将指定存储区内容写入到文件内 */
@@ -113,9 +113,13 @@ BYTE WriteBuffer[] = "随便写到文件中123abc";         /* 写缓冲区*/
 		LED0 = ~LED0;
 		LED1 = ~LED1;
 		delay_ms(300);
+		//printf("please preess key0, which_BUF = %d\r\n", which_BUF);
 	}
 	
-	total = 0;
+	which_BUF = 1;
+	delay_ms(10);
+	printf("$RST,ERASENAV\r\n");
+	
 	while(1)
 	{
 		
@@ -149,22 +153,31 @@ BYTE WriteBuffer[] = "随便写到文件中123abc";         /* 写缓冲区*/
 			if (res_flash==FR_OK && fnum == USART_REC_LEN){
 				LED0 = 1;
 				LED1 = 0;
-				USART_RX_cnt2 = 0;
 				//printf("write BUF2 OK, now cnt1 = %d\r\n", USART_RX_cnt1);
 			}
 			else
 				printf("！！文件写入失败：(res_flash = %d), fnum = %d\n",res_flash, fnum); 
+			
+			USART_RX_cnt2 = 0;
+			if (key_begin_flag == 1)
+				{
+						key_begin_flag = 0;
+//						printf("$SETDCXO,4026384389\r\n");
+//						delay_ms(10);
+						printf("$SRP,-1557898,5327342,3132336\r\n");
+				}
 		}
 		else if(USART_RX_cnt1 == USART_REC_LEN){
 			res_flash = f_write(&fnew, USART_RX_BUF1, USART_REC_LEN, &fnum);
 			if (res_flash==FR_OK && fnum == USART_REC_LEN){
 				LED0 = 0;
 				LED1 = 1;
-				USART_RX_cnt1 = 0;
 				//printf("write BUF1 OK, now cnt2 = %d\r\n", USART_RX_cnt2);
 			}
 			else
 				printf("！！文件写入失败：(res_flash = %d), fnum = %d\n",res_flash, fnum); 
+			
+			USART_RX_cnt1 = 0;
 		}
 	} 
 }
