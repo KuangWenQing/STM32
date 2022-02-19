@@ -83,7 +83,7 @@ int GetKey (void)  {
 u8 USART_RX_BUF1[USART_REC_LEN];     //接收缓冲,最大USART_REC_LEN个字节.
 u8 USART_RX_BUF2[USART_REC_LEN];     //接收缓冲,最大USART_REC_LEN个字节.
 
-u8 which_BUF=1;       //接收BUF选择1， 2
+volatile u8 which_BUF=0;       //接收BUF选择1， 2
 u16 USART_RX_cnt1=0;		//BUF1接收数据个数（计数）
 u16 USART_RX_cnt2=0;		//BUF2接收数据个数（计数）  
 //=======
@@ -133,7 +133,9 @@ void uart_init(u32 bound){
   USART_Init(USART1, &USART_InitStructure); //初始化串口1
   USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);//开启串口接受中断
   USART_Cmd(USART1, ENABLE);                    //使能串口1 
-
+	which_BUF=0;
+	USART_RX_cnt1=0;
+	USART_RX_cnt2=0;
 }
 
 void USART1_IRQHandler(void)                	//串口1中断服务程序
@@ -147,25 +149,25 @@ void USART1_IRQHandler(void)                	//串口1中断服务程序
 		Res =USART_ReceiveData(USART1);	//读取接收到的数据
 		
 //<<<<<<< HEAD
-		if(which_BUF)	//数据缓存到BUF1
+		if(which_BUF == 1)	//数据缓存到BUF1
 		{
-			if(USART_REC_LEN == USART_RX_cnt1)	//BUF1写满了（2K个字节）
-			{
-				which_BUF = 0;
-				USART_RX_BUF2[USART_RX_cnt2++] = Res;
-			}
-			else
-				USART_RX_BUF1[USART_RX_cnt1++] = Res;
+				if(USART_REC_LEN == USART_RX_cnt1)	//BUF1写满了（2K个字节）
+				{
+					which_BUF = 2;
+					USART_RX_BUF2[USART_RX_cnt2++] = Res;
+				}
+				else
+					USART_RX_BUF1[USART_RX_cnt1++] = Res;
     }
-		else
+		else if(which_BUF == 2)
 		{
-			if(USART_REC_LEN == USART_RX_cnt2)	//BUF2写满了（2K个字节）
-			{
-				which_BUF = 1;
-				USART_RX_BUF1[USART_RX_cnt1++] = Res;
-			}
-			else
-				USART_RX_BUF2[USART_RX_cnt2++] = Res;
+				if(USART_REC_LEN == USART_RX_cnt2)	//BUF2写满了（2K个字节）
+				{
+					which_BUF = 1;
+					USART_RX_BUF1[USART_RX_cnt1++] = Res;
+				}
+				else
+					USART_RX_BUF2[USART_RX_cnt2++] = Res;
 		}
 	}
 //=======

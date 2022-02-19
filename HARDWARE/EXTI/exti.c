@@ -21,8 +21,14 @@ void EXTIX_Init(void)
   	EXTI_InitStructure.EXTI_Line=EXTI_Line4;
   	EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;	
   	EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling;
+	  EXTI_InitStructure.EXTI_LineCmd = ENABLE;
   	EXTI_Init(&EXTI_InitStructure);	  	//根据EXTI_InitStruct中指定的参数初始化外设EXTI寄存器
 
+		//PE3 中断线以及中断初始化配置   下降沿触发   //KEY1
+  	GPIO_EXTILineConfig(GPIO_PortSourceGPIOE,GPIO_PinSource3);
+  	EXTI_InitStructure.EXTI_Line=EXTI_Line3;	
+  	EXTI_Init(&EXTI_InitStructure);	 	//根据EXTI_InitStruct中指定的参数初始化外设EXTI寄存器
+	
 
    //GPIOA.0	  中断线以及中断初始化配置 上升沿触发 PA0  WK_UP
  	  GPIO_EXTILineConfig(GPIO_PortSourceGPIOA,GPIO_PinSource0); 
