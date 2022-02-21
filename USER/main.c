@@ -164,7 +164,8 @@ UINT fnum;            					  /* 文件成功读写数量 */
 						key_begin_flag = 0;
 //						printf("$SETDCXO,4026384389\r\n");
 //						delay_ms(10);
-						printf("$SRP,-1557898,5327342,3132336\r\n");
+//						printf("$SRP,-1557898,5327342,3132336\r\n");
+						printf("$SRP,-1557897.3,5327341.8,3132330.4");
 				}
 		}
 		else if(USART_RX_cnt1 == USART_REC_LEN){
